@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Apple Cash">
   <title>Apple Cash</title>
   <style>
     * {
@@ -22,75 +25,156 @@
       overflow: hidden;
       -webkit-font-smoothing: antialiased;
     }
-    #main-screen {
+
+    #install-screen {
       height: 100%;
-      display: flex;
+      display: none;
       flex-direction: column;
-      padding: 16px 20px 40px;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 30px;
+      text-align: center;
+      background: #000;
+    }
+
+    .install-icon {
+      width: 80px;
+      height: 80px;
+      background: #1c1c1e;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin-bottom: 28px;
+    }
+
+    .install-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .install-subtitle {
+      font-size: 17px;
+      color: #8e8e93;
+      margin-bottom: 40px;
+      line-height: 1.4;
+    }
+
+    .steps {
+      text-align: left;
+      width: 100%;
+      max-width: 320px;
+      margin-bottom: 40px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: #0a84ff;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      font-size: 17px;
+      line-height: 1.4;
+      padding-top: 3px;
+    }
+
+    .step-text strong {
+      color: #fff;
+    }
+
+    .share-icon {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      vertical-align: middle;
+      margin: 0 2px;
+    }
+
+    /* ========== MAIN SCREEN ========== */
+    #main {
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      padding: 12px 20px 40px;
       overflow-y: auto;
     }
 
-    .card-wrapper {
+    .card-wrap {
       width: 100%;
-      max-width: 380px;
-      margin: 10px auto 24px;
+      max-width: 400px;
+      margin: 6px auto 22px;
     }
 
-    .apple-cash-card {
+    .card {
       width: 100%;
-      aspect-ratio: 1.7 / 1;
+      aspect-ratio: 1.68 / 1;
       border-radius: 16px;
       overflow: hidden;
-      position: relative;
       background: #111;
+      position: relative;
     }
 
-    .apple-cash-card img {
+    .card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
+
     .card-fallback {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(160deg, #1a1a1a, #0d0d0d);
-      display: flex;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, #1f1f1f, #111);
+      display: none;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #555;
+      color: #666;
       font-size: 15px;
       text-align: center;
-      padding: 20px;
+      gap: 6px;
     }
 
     .balance-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 380px;
-      margin: 0 auto 28px;
+      max-width: 400px;
       width: 100%;
+      margin: 0 auto 26px;
     }
 
-    .balance-left {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .balance-label {
+    .balance-left .label {
       font-size: 15px;
       color: #8e8e93;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
-    .balance-amount {
-      font-size: 34px;
+    .balance-left .amount {
+      font-size: 32px;
       font-weight: 600;
       letter-spacing: -0.5px;
     }
 
-    .send-request-btn {
+    .send-request {
       background: #1c1c1e;
       border: 1px solid #3a3a3c;
       color: #fff;
@@ -101,55 +185,50 @@
       cursor: pointer;
     }
 
-    .send-request-btn:active {
-      opacity: 0.7;
+    .send-request:active {
+      opacity: 0.65;
     }
 
     .section-title {
       font-size: 20px;
       font-weight: 600;
-      margin-bottom: 12px;
-      max-width: 380px;
-      margin-left: auto;
-      margin-right: auto;
+      max-width: 400px;
       width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      margin: 0 auto 12px;
     }
 
-    .transactions {
-      max-width: 380px;
+    .tx-list {
+      max-width: 400px;
+      width: 100%;
       margin: 0 auto;
-      width: 100%;
     }
 
-    .tx-item {
+    .tx {
       display: flex;
       align-items: center;
-      padding: 12px 0;
+      padding: 13px 0;
       border-bottom: 0.5px solid #1c1c1e;
     }
 
-    .tx-item:last-child {
+    .tx:last-child {
       border-bottom: none;
     }
 
     .tx-icon {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: #1c1c1e;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 12px;
-      flex-shrink: 0;
-      font-size: 16px;
+      font-size: 17px;
       color: #8e8e93;
+      margin-right: 13px;
+      flex-shrink: 0;
     }
 
-    .tx-content {
+    .tx-body {
       flex: 1;
       min-width: 0;
     }
@@ -162,7 +241,7 @@
       text-overflow: ellipsis;
     }
 
-    .tx-subtitle {
+    .tx-sub {
       font-size: 14px;
       color: #8e8e93;
       margin-top: 1px;
@@ -181,18 +260,19 @@
     }
 
     .tx-chevron {
+      font-size: 18px;
       color: #3a3a3c;
-      font-size: 14px;
-      margin-top: 2px;
+      line-height: 1;
+      margin-top: 1px;
     }
 
     .empty {
       text-align: center;
       color: #636366;
-      padding: 50px 0;
+      padding: 60px 0;
       font-size: 16px;
     }
-    #request-screen {
+    #request {
       height: 100%;
       display: none;
       flex-direction: column;
@@ -204,20 +284,19 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      padding: 18px 20px;
-      padding-top: 16px;
+      padding: 16px 20px 8px;
     }
 
     .back-btn {
       position: absolute;
-      left: 16px;
+      left: 12px;
       background: none;
       border: none;
       color: #fff;
-      font-size: 28px;
+      font-size: 34px;
       line-height: 1;
+      padding: 4px 10px;
       cursor: pointer;
-      padding: 4px 8px;
     }
 
     .req-title {
@@ -231,21 +310,21 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding-bottom: 20px;
+      padding-bottom: 10px;
     }
 
     .big-amount {
-      font-size: 72px;
+      font-size: 68px;
       font-weight: 600;
-      letter-spacing: -2px;
-      margin-bottom: 12px;
+      letter-spacing: -1.5px;
+      margin-bottom: 10px;
     }
 
     .big-amount.placeholder {
       color: #3a3a3c;
     }
 
-    .note-placeholder {
+    .note {
       font-size: 17px;
       color: #636366;
     }
@@ -253,21 +332,21 @@
     .keypad {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      padding: 0 40px 20px;
+      gap: 14px;
+      padding: 0 38px 18px;
       max-width: 340px;
-      margin: 0 auto;
       width: 100%;
+      margin: 0 auto;
     }
 
     .key {
-      width: 76px;
-      height: 76px;
+      width: 74px;
+      height: 74px;
       border-radius: 50%;
       background: #1c1c1e;
       border: none;
       color: #fff;
-      font-size: 32px;
+      font-size: 30px;
       font-weight: 400;
       display: flex;
       align-items: center;
@@ -281,16 +360,16 @@
     }
 
     .key.delete {
-      font-size: 26px;
+      font-size: 24px;
     }
 
     .continue-btn {
-      margin: 10px 20px 40px;
+      margin: 6px 20px 40px;
       background: #1c1c1e;
       color: #fff;
       border: none;
       border-radius: 980px;
-      padding: 18px;
+      height: 52px;
       font-size: 17px;
       font-weight: 600;
       width: calc(100% - 40px);
@@ -302,7 +381,7 @@
     }
 
     .continue-btn:disabled {
-      opacity: 0.4;
+      opacity: 0.35;
       cursor: not-allowed;
     }
 
@@ -312,41 +391,78 @@
   </style>
 </head>
 <body>
-  <div id="main-screen">
-    <div class="card-wrapper">
-      <div class="apple-cash-card">
-        <img src="/src/card.png" alt="Apple Cash" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-        <div class="card-fallback" style="display:none;">
-          Unable to load Card<br
+  <div id="install-screen">
+    <div class="install-icon">💳</div>
+    <div class="install-title">Add to Home Screen</div>
+    <div class="install-subtitle">
+      For the full experience, please add this to your Home Screen.
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-text">
+          Tap the <strong>Share</strong> button<br>
+          <span style="color:#8e8e93;font-size:15px">(the square with the arrow pointing up)</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-text">
+          Scroll down and tap<br>
+          <strong>Add to Home Screen</strong>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-text">
+          Tap <strong>Add</strong> in the top right
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:15px;color:#636366;line-height:1.5;">
+      Then open it from your Home Screen
+    </div>
+  </div>
+
+  <div id="main">
+    <div class="card-wrap">
+      <div class="card">
+        <img src="src/card.png" alt="Apple Cash" id="cardImage"
+             onerror="this.style.display='none'; document.getElementById('fallback').style.display='flex'">
+        <div class="card-fallback" id="fallback">
+          <div>card.png missing</div>
+          <div style="font-size:13px;opacity:0.7">Put it in the /src folder</div>
         </div>
       </div>
     </div>
 
     <div class="balance-row">
       <div class="balance-left">
-        <div class="balance-label">Balance</div>
-        <div class="balance-amount" id="balance">$0.00</div>
+        <div class="label">Balance</div>
+        <div class="amount" id="balance">$0.00</div>
       </div>
-      <button class="send-request-btn" onclick="showRequest()">Send or Request</button>
+      <button class="send-request" id="openRequest">Send or Request</button>
     </div>
 
-    <div class="section-title">
-      Latest Transactions
-    </div>
+    <div class="section-title">Latest Transactions</div>
 
-    <div class="transactions" id="transactions">
+    <div class="tx-list" id="txList">
       <div class="empty">No transactions</div>
     </div>
   </div>
-  <div id="request-screen">
+  <div id="request">
     <div class="req-header">
-      <button class="back-btn" onclick="hideRequest()">‹</button>
+      <button class="back-btn" id="backBtn">‹</button>
       <div class="req-title">Tap to Cash</div>
     </div>
 
     <div class="amount-area">
-      <div class="big-amount placeholder" id="amount-display">$0</div>
-      <div class="note-placeholder">Add a note...</div>
+      <div class="big-amount placeholder" id="amountDisplay">$0</div>
+      <div class="note">Add a note...</div>
     </div>
 
     <div class="keypad" id="keypad">
@@ -364,9 +480,7 @@
       <button class="key delete" data-key="delete">⌫</button>
     </div>
 
-    <button class="continue-btn" id="continue-btn" disabled onclick="doRequest()">
-      Continue
-    </button>
+    <button class="continue-btn" id="continueBtn" disabled>Continue</button>
   </div>
 
   <audio id="sound" preload="auto">
@@ -374,51 +488,82 @@
   </audio>
 
   <script>
-    let currentAmount = "";
+    function isStandalone() {
+      return window.matchMedia('(display-mode: standalone)').matches || 
+             window.navigator.standalone === true;
+    }
+
+    const installScreen = document.getElementById('install-screen');
+    const main = document.getElementById('main');
+    const request = document.getElementById('request');
+
+    if (isStandalone()) {
+      installScreen.style.display = 'none';
+      main.style.display = 'flex';
+    } else {
+      installScreen.style.display = 'flex';
+      main.style.display = 'none';
+      request.style.display = 'none';
+    }
+
+    const balanceEl = document.getElementById('balance');
+    const amountDisplay = document.getElementById('amountDisplay');
+    const continueBtn = document.getElementById('continueBtn');
+    const txList = document.getElementById('txList');
+    const sound = document.getElementById('sound');
+
+    let amountStr = '';
     let balance = 0;
     let transactions = [];
 
-    const balanceEl = document.getElementById('balance');
-    const amountDisplay = document.getElementById('amount-display');
-    const continueBtn = document.getElementById('continue-btn');
-    const transactionsEl = document.getElementById('transactions');
-    const sound = document.getElementById('sound');
+    document.getElementById('openRequest').addEventListener('click', () => {
+      amountStr = '';
+      updateAmount();
+      main.style.display = 'none';
+      request.style.display = 'flex';
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      request.style.display = 'none';
+      main.style.display = 'flex';
+    });
+
     document.getElementById('keypad').addEventListener('click', (e) => {
       const key = e.target.closest('.key')?.dataset.key;
       if (!key) return;
 
       if (key === 'delete') {
-        currentAmount = currentAmount.slice(0, -1);
+        amountStr = amountStr.slice(0, -1);
       } else if (key === '.') {
-        if (!currentAmount.includes('.')) {
-          currentAmount = currentAmount === '' ? '0.' : currentAmount + '.';
+        if (!amountStr.includes('.')) {
+          amountStr = amountStr === '' ? '0.' : amountStr + '.';
         }
       } else {
-        if (currentAmount.includes('.')) {
-          const parts = currentAmount.split('.');
-          if (parts[1] && parts[1].length >= 2) return;
+        if (amountStr.includes('.')) {
+          const decimals = amountStr.split('.')[1];
+          if (decimals && decimals.length >= 2) return;
         }
-        if (currentAmount === '0') {
-          currentAmount = key;
+        if (amountStr === '0') {
+          amountStr = key;
         } else {
-          currentAmount += key;
+          amountStr += key;
         }
       }
-      updateAmountDisplay();
+      updateAmount();
     });
 
-    function updateAmountDisplay() {
-      if (!currentAmount || currentAmount === '0') {
+    function updateAmount() {
+      if (!amountStr || amountStr === '0') {
         amountDisplay.textContent = '$0';
         amountDisplay.classList.add('placeholder');
         continueBtn.disabled = true;
       } else {
-        let num = parseFloat(currentAmount);
-        if (currentAmount.endsWith('.')) {
-          amountDisplay.textContent = '$' + currentAmount;
+        const num = parseFloat(amountStr);
+        if (amountStr.endsWith('.')) {
+          amountDisplay.textContent = '$' + amountStr;
         } else {
           amountDisplay.textContent = '$' + num.toLocaleString('en-US', {
-            minimumFractionDigits: currentAmount.includes('.') ? currentAmount.split('.')[1].length : 0,
+            minimumFractionDigits: amountStr.includes('.') ? amountStr.split('.')[1].length : 0,
             maximumFractionDigits: 2
           });
         }
@@ -427,64 +572,59 @@
       }
     }
 
-    function showRequest() {
-      currentAmount = '';
-      updateAmountDisplay();
-      document.getElementById('main-screen').style.display = 'none';
-      document.getElementById('request-screen').style.display = 'flex';
-    }
+    continueBtn.addEventListener('click', () => {
+      const value = parseFloat(amountStr);
+      if (!value || value <= 0) return;
 
-    function hideRequest() {
-      document.getElementById('request-screen').style.display = 'none';
-      document.getElementById('main-screen').style.display = 'flex';
-    }
-
-    function doRequest() {
-      const amount = parseFloat(currentAmount);
-      if (!amount || amount <= 0) return;
       sound.currentTime = 0;
       sound.play().catch(() => {});
-      if (navigator.vibrate) navigator.vibrate([35, 25, 55]);
-      balance += amount;
+      if (navigator.vibrate) navigator.vibrate([40, 30, 55]);
+
+      balance += value;
 
       const now = new Date();
-      const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      const time = now.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit'
+      });
 
       transactions.unshift({
         title: 'Tap to Cash',
-        subtitle: 'Added to Balance • ' + timeStr,
-        amount: amount
+        subtitle: 'Added to Balance • ' + time,
+        amount: value
       });
 
-      updateMainUI();
-      hideRequest();
-    }
+      renderMain();
+      request.style.display = 'none';
+      main.style.display = 'flex';
+    });
 
-    function updateMainUI() {
+    function renderMain() {
       balanceEl.textContent = '$' + balance.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
 
       if (transactions.length === 0) {
-        transactionsEl.innerHTML = '<div class="empty">No transactions</div>';
+        txList.innerHTML = '<div class="empty">No transactions</div>';
       } else {
-        transactionsEl.innerHTML = transactions.map(tx => `
-          <div class="tx-item">
+        txList.innerHTML = transactions.map(t => `
+          <div class="tx">
             <div class="tx-icon">$</div>
-            <div class="tx-content">
-              <div class="tx-title">${tx.title}</div>
-              <div class="tx-subtitle">${tx.subtitle}</div>
+            <div class="tx-body">
+              <div class="tx-title">${t.title}</div>
+              <div class="tx-sub">${t.subtitle}</div>
             </div>
             <div class="tx-right">
-              <div class="tx-amount">+$${tx.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+              <div class="tx-amount">+$${t.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
               <div class="tx-chevron">›</div>
             </div>
           </div>
         `).join('');
       }
     }
-    updateMainUI();
+
+    renderMain();
   </script>
 </body>
 </html>
